@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Grid } from 'semantic-ui-react';
 import EventList from '../EventList/EventList';
 import { deleteEvent } from '../eventActions';
+import EventActivity from '../EventActivity/EventActivity';
 
 const mapStateToProps = (state) => ({
     events: state.events
@@ -21,16 +22,15 @@ class EventDashboard extends Component {
     render() {
         const {events } = this.props;
         return (
-            <div>
-                <Grid>
-                    <Grid.Column width={10}>
-                        <EventList deleteEvent={this.handleDeleteEvent} events={events}/>
-                    </Grid.Column>
-                    <Grid.Column width={6}>
-                    </Grid.Column>
-                </Grid>
-            </div>
-        )
+            <Grid>
+                <Grid.Column width={10}>
+                    <EventList deleteEvent={this.handleDeleteEvent} events={events}/>
+                </Grid.Column>
+                <Grid.Column width={6}>
+                    <EventActivity />
+                </Grid.Column>
+            </Grid>
+        );
     }
 }
 
