@@ -12,7 +12,7 @@ const actions = {
 const RegisterForm = ({handleSubmit, registerUser}) => {
   return (
     <div>
-      <Form size="large">
+      <Form size="large" onSubmit={handleSubmit(registerUser)}>
         <Segment>
           <Field
             name="displayName"
