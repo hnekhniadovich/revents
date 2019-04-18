@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withFirestore } from 'react-redux-firebase';
 import { reduxForm, Field } from 'redux-form'; 
-import moment from 'moment';
 import { composeValidators, combineValidators, isRequired, hasLengthGreaterThan } from 'revalidate'; 
 import { Segment, Form, Button, Grid, Header } from 'semantic-ui-react';
-import { createEvent, updateEvent } from '../eventActions';
+import { createEvent, updateEvent, cancelToggle } from '../eventActions';
 import TextInput from '../../../app/common/form/TextInput';
 import TextArea from '../../../app/common/form/TextArea';
 import SelectInput from '../../../app/common/form/SelectInput';
@@ -20,13 +19,15 @@ const mapStateToProps = (state) => {
     }
 
     return {
-        initialValues: event
+        initialValues: event,
+        event
     }
 }
 
 const actions = {
     createEvent,
-    updateEvent
+    updateEvent,
+    cancelToggle
 }
 
 const category = [
@@ -54,7 +55,7 @@ class EventForm extends Component {
 
     async componentDidMount() {
         const {firestore, match} = this.props;
-        await firestore.get(`events/${match.params.id}`);
+        await firestore.setListener(`events/${match.params.id}`);
     }
    
     onFormSubmit = values => {
@@ -68,7 +69,7 @@ class EventForm extends Component {
     }
 
     render() {
-        const { invalid, submitting, pristine } = this.props;
+        const { invalid, submitting, pristine, event, cancelToggle } = this.props;
         return (
             <Grid>
                 <Grid.Column width={10}>
@@ -93,6 +94,13 @@ class EventForm extends Component {
                             Submit
                         </Button>
                         <Button onClick={this.props.history.goBack} type="button">Cancel</Button>
+                        <Button 
+                            onClick={() => cancelToggle(!event.cancelled, event.id)}
+                            type='button' 
+                            color={event.cancelled ? 'green': 'red'}
+                            floated='right'
+                            content={event.cancelled ? 'Reactivate Event' : 'Cancel Event'}
+                        />
                     </Form>
                 </Segment>
                 </Grid.Column>
