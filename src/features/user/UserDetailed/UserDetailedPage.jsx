@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import { differenceInYears } from 'date-fns';
 import format from 'date-fns/format';
 import { userDetailedQuery } from '../userQueries';
+import LazyLoad from 'react-lazyload';
+import LoadingComponent from '../../../app/layout/LoadingComponent'
 
 const mapStateToProps = (state, ownProps) => {
     let userUid = null;
@@ -24,13 +26,18 @@ const mapStateToProps = (state, ownProps) => {
         userUid,
         profile,
         photos: state.firestore.ordered.photos,
+        requesting: state.firestore.status.requesting
     }
 };
 
 class UserDetailedPage extends Component {
 
     render() {
-        const { profile, photos } = this.props;
+        const { profile, photos, auth, match, requesting } = this.props;
+        const isCurrentUser = auth.uid === match.params.id;
+        const loading = Object.values(requesting).some(a => a === true);
+
+        if (loading) return <LoadingComponent inverted={true}/>
         
         let age;
         if(profile.dateOfBirth) {
@@ -94,7 +101,11 @@ class UserDetailedPage extends Component {
                 </Grid.Column>
                 <Grid.Column width={4}>
                     <Segment>
-                        <Button as={Link} to='/settings' color='teal' fluid basic content='Edit Profile'/>
+                        {isCurrentUser ? (
+                            <Button as={Link} to='/settings' color='teal' fluid basic content='Edit Profile'/>
+                        ) : (
+                            <Button color='teal' fluid basic content='Follow User'/>
+                        )}
                     </Segment>
                 </Grid.Column>
                 {photos && photos.length > 0 && (
@@ -104,9 +115,11 @@ class UserDetailedPage extends Component {
                             <Header icon='image' content='Photos'/>
                             
                             <Image.Group size='small'>
-                                {photos && photos.map(photo => <Image key={photo.id} src={photo.url}/>)}
+                                {photos && photos.map(photo => 
+                                <LazyLoad key={photo.id} height={150} placeholder={<Image src='/assets/user.png'/>}>
+                                    <Image src={photo.url}/>
+                                </LazyLoad> )}
                             </Image.Group>
-                        
                         </Segment>
                     </Grid.Column>
                 )}
