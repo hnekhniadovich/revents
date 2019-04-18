@@ -57,6 +57,11 @@ class EventForm extends Component {
         const {firestore, match} = this.props;
         await firestore.setListener(`events/${match.params.id}`);
     }
+
+    async componentWillMount() {
+        const {firestore, match} = this.props;
+        await firestore.unsetListener(`events/${match.params.id}`);
+    }
    
     onFormSubmit = values => {
         if(this.props.initialValues.id) {

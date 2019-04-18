@@ -8,26 +8,26 @@ import { fetchSampleData } from '../../app/data/mockApi';
 import { createNewEvent } from '../../app/common/utils/helpers';
 import moment from 'moment';
 
-export const createEvent = (event) => {
-    return async (dispatch, getState, {getFirestore}) => {
+export const createEvent = event => {
+    return async (dispatch, getState, { getFirestore }) => {
         const firestore = getFirestore();
         const user = firestore.auth().currentUser;
         const photoURL = getState().firebase.profile.photoURL;
         let newEvent = createNewEvent(user, photoURL, event);
         try {
             let createdEvent = await firestore.add(`events`, newEvent);
-            await firestore.set(`event_attendee/${createdEvent.id}_${user.uid}`,{
-                eventId: createdEvent.id,
-                userUid: user.uid,
-                eventDate: event.date,
-                host: true
-            })
-            toastr.success('Success!', 'Event has been created')
+            await firestore.set(`event_attendee/${createdEvent.id}_${user.uid}`, {
+            eventId: createdEvent.id,
+            userUid: user.uid,
+            eventDate: event.date,
+            host: true
+            });
+            toastr.success('Success', 'Event has been created');
         } catch (error) {
-            toastr.error('Oops', 'Something went wrong')
+            toastr.error('Oops', 'Something went wrong');
         }
-    }
-}
+    };
+};
 
 
 export const updateEvent = (event) => {
