@@ -79,7 +79,7 @@ class EventForm extends Component {
             <Grid>
                 <Grid.Column width={10}>
                 <Segment>
-                    <Form onSubmit={this.props.handleSubmit(this.onFormSubmit)}>
+                    <Form onSubmit={this.props.handleSubmit(this.onFormSubmit)} autoComplete="off">
                     <Header sub color='teal' content='Event Details' />
                         <Field name='title' type='text' component={TextInput} placeholder='Give your event a name'/>
                         <Field name='category' type='text' component={SelectInput} options={category} placeholder='What is your event about'/>

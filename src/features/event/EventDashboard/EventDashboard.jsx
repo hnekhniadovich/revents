@@ -1,33 +1,59 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { firestoreConnect, isLoaded, isEmpty } from 'react-redux-firebase';
-import { Grid } from 'semantic-ui-react';
+import { firestoreConnect } from 'react-redux-firebase';
+import { Grid, Button } from 'semantic-ui-react';
 import EventList from '../EventList/EventList';
-import { deleteEvent } from '../eventActions';
+import { getEventsForDashboard } from '../eventActions';
 import LoadingComponent from '../../../app/layout/LoadingComponent';
 import EventActivity from '../EventActivity/EventActivity';
 
 const mapStateToProps = (state) => ({
-    events: state.firestore.ordered.events,
+    events: state.events,
+    loading: state.async.loading
 });
 
 const actions = {
-    deleteEvent
+    getEventsForDashboard
 }
 
 class EventDashboard extends Component {
-    
-    handleDeleteEvent = (eventId) => () => {
-        this.props.deleteEvent(eventId);
+    state = {
+        moreEvents: false
     }
 
-    render() {
+    async componentDidMount() {
+        let next = await this.props.getEventsForDashboard();
+        console.log(next);
+
+        if(next && next.docs && next.docs.length > 1) {
+            this.setState({
+                moreEvents: true
+            })
+        }
+    }
+
+    getNextEvents = async () => {
         const { events } = this.props;
-        if (!isLoaded(events) || isEmpty(events)) return <LoadingComponent inverted={true} />;
+        let lastEvent = events && events[events.length - 1];
+        console.log(lastEvent);
+        let next = await this.props.getEventsForDashboard(lastEvent);
+        console.log(next);
+        if (next && next.docs && next.docs.length <= 1) {
+            this.setState({
+                moreEvents: false
+            });
+        }
+    };
+    
+
+    render() {
+        const { events, loading } = this.props;
+        if (loading) return <LoadingComponent inverted={true} />
         return (
             <Grid>
                 <Grid.Column width={10}>
-                    <EventList deleteEvent={this.handleDeleteEvent} events={events}/>
+                    <EventList events={events}/>
+                    <Button onClick={this.getNextEvents} disabled={!this.state.moreEvents} content='More' color='green' floated='right'/>
                 </Grid.Column>
                 <Grid.Column width={6}>
                     <EventActivity />
