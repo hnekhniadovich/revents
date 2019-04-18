@@ -59,13 +59,7 @@ class EventForm extends Component {
             this.props.updateEvent(values);
             this.props.history.goBack();
         } else {
-            const newEvent = {
-                ...values,
-                id: cuid(),
-                hostPhotoURL: '/assets/user.png',
-                hostedBy: 'Bob'
-            }
-            this.props.createEvent(newEvent);
+            this.props.createEvent(values);
             this.props.history.push('/events');
         }
     }
