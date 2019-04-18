@@ -7,6 +7,7 @@ import {
 import { asyncActionStart, asyncActionFinish, asyncActionError } from '../async/asyncActions';
 import { fetchSampleData } from '../../app/data/mockApi';
 import { createNewEvent } from '../../app/common/utils/helpers';
+import moment from 'moment';
 
 export const createEvent = (event) => {
     return async (dispatch, getState, {getFirestore}) => {
@@ -31,14 +32,13 @@ export const createEvent = (event) => {
 
 
 export const updateEvent = (event) => {
-    return async dispatch => {
+    return async (dispatch, getState, {getFirestore}) => {
+        const firestore = getFirestore();
+        if(event.date !== getState().firestore.ordered.events[0].date) {
+            event.date = moment(event.date).toDate();
+        }
         try {
-            dispatch({
-                type: UPDATE_EVENT,
-                payload: {
-                    event
-                } 
-            });
+            await firestore.update(`events/${event.id}`, event);
             toastr.success('Success!', 'Event has been updated')
         } catch (error) {
             toastr.error('Oops', 'Something went wrong')

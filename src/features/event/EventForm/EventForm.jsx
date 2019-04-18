@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withFirestore } from 'react-redux-firebase';
 import { reduxForm, Field } from 'redux-form'; 
 import moment from 'moment';
 import { composeValidators, combineValidators, isRequired, hasLengthGreaterThan } from 'revalidate'; 
-import cuid from 'cuid';
 import { Segment, Form, Button, Grid, Header } from 'semantic-ui-react';
 import { createEvent, updateEvent } from '../eventActions';
 import TextInput from '../../../app/common/form/TextInput';
@@ -11,13 +11,12 @@ import TextArea from '../../../app/common/form/TextArea';
 import SelectInput from '../../../app/common/form/SelectInput';
 import DateInput from '../../../app/common/form/DateInput';
 
-const mapStateToProps = (state, ownProps) => {
-    const eventId = ownProps.match.params.id;
+const mapStateToProps = (state) => {
 
     let event = {}
 
-    if(eventId && state.events.length > 0) {
-        event = state.events.filter(event => event.id === eventId)[0]; 
+    if (state.firestore.ordered.events && state.firestore.ordered.events[0]) {
+        event = state.firestore.ordered.events[0];
     }
 
     return {
@@ -52,9 +51,13 @@ const validate = combineValidators({
 });
 
 class EventForm extends Component {
+
+    async componentDidMount() {
+        const {firestore, match} = this.props;
+        await firestore.get(`events/${match.params.id}`);
+    }
    
     onFormSubmit = values => {
-        values.date = moment(values.date).format();
         if(this.props.initialValues.id) {
             this.props.updateEvent(values);
             this.props.history.goBack();
@@ -99,6 +102,7 @@ class EventForm extends Component {
     }
 }
 
-export default connect(mapStateToProps, actions )(
-    reduxForm({form: 'eventForm', enableReinitialize: true, validate })(EventForm)
+export default withFirestore(
+    connect(mapStateToProps, actions )(
+        reduxForm({form: 'eventForm', enableReinitialize: true, validate })(EventForm))
 );
