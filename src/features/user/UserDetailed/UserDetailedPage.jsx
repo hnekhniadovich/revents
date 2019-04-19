@@ -9,7 +9,7 @@ import format from 'date-fns/format';
 import { userDetailedQuery } from '../userQueries';
 import LazyLoad from 'react-lazyload';
 import LoadingComponent from '../../../app/layout/LoadingComponent';
-import { getUserEvents, followUser } from '../userActions';
+import { getUserEvents, followUser, unfollowUser } from '../userActions';
 
 const mapStateToProps = (state, ownProps) => {
     let userUid = null;
@@ -28,13 +28,15 @@ const mapStateToProps = (state, ownProps) => {
         eventsLoading: state.async.loading,
         auth: state.firebase.auth,
         photos: state.firestore.ordered.photos,
-        requesting: state.firestore.status.requesting
+        requesting: state.firestore.status.requesting,
+        following: state.firestore.ordered.following
     }
 }
   
 const actions = {
     getUserEvents,
-    followUser
+    followUser,
+    unfollowUser
 }
 
 const panes = [
@@ -55,9 +57,10 @@ class UserDetailedPage extends Component {
     }
 
     render() {
-        const { profile, photos, auth, match, requesting, events, eventsLoading, followUser } = this.props;
+        const { profile, photos, auth, match, requesting, events, eventsLoading, followUser, following, unfollowUser } = this.props;
         const isCurrentUser = auth.uid === match.params.id;
         const loading = Object.values(requesting).some(a => a === true);
+        const isFollowing = !isEmpty(following);
 
         if (loading) return <LoadingComponent inverted={true}/>
         
@@ -122,29 +125,29 @@ class UserDetailedPage extends Component {
                     </Segment>
                 </Grid.Column>
                 <Grid.Column width={4}>
-                    <Segment>
-                        {isCurrentUser ? (
-                            <Button as={Link} to='/settings' color='teal' fluid basic content='Edit Profile'/>
-                        ) : (
-                            <Button onClick={() => followUser(profile)} color='teal' fluid basic content='Follow User'/>
-                        )}
-                    </Segment>
+                <Segment>
+                    {isCurrentUser && <Button as={Link} to="/settings" color="teal" fluid basic content="Edit Profile" />}
+                    {!isCurrentUser &&
+                    !isFollowing && <Button onClick={() => followUser(profile)} color="teal" fluid basic content="Follow user" />}
+
+                    {!isCurrentUser && isFollowing && <Button onClick={() => unfollowUser(profile)} color="teal" fluid basic content="Unfollow" />}
+                </Segment>
                 </Grid.Column>
-                {photos && photos.length > 0 && (
-                    <Grid.Column width={12}>
-                        <Segment attached>
-                        
-                            <Header icon='image' content='Photos'/>
+                    {photos && photos.length > 0 && (
+                        <Grid.Column width={12}>
+                            <Segment attached>
                             
-                            <Image.Group size='small'>
-                                {photos && photos.map(photo => 
-                                <LazyLoad key={photo.id} height={150} placeholder={<Image src='/assets/user.png'/>}>
-                                    <Image src={photo.url}/>
-                                </LazyLoad> )}
-                            </Image.Group>
-                        </Segment>
-                    </Grid.Column>
-                )}
+                                <Header icon='image' content='Photos'/>
+                                
+                                <Image.Group size='small'>
+                                    {photos && photos.map(photo => 
+                                    <LazyLoad key={photo.id} height={150} placeholder={<Image src='/assets/user.png'/>}>
+                                        <Image src={photo.url}/>
+                                    </LazyLoad> )}
+                                </Image.Group>
+                            </Segment>
+                        </Grid.Column>
+                    )}
                 <Grid.Column width={12}>
                     <Segment attached loading={eventsLoading}>
                         <Header icon='calendar' content='Events'/>
@@ -178,5 +181,5 @@ class UserDetailedPage extends Component {
 
 export default compose(
     connect(mapStateToProps, actions),
-    firestoreConnect((auth, userUid) => userDetailedQuery(auth, userUid))
+    firestoreConnect((auth, userUid, match) => userDetailedQuery(auth, userUid, match))
 )(UserDetailedPage);
