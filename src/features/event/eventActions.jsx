@@ -1,7 +1,5 @@
 import { toastr } from 'react-redux-toastr';
-import {  
-    FETCH_EVENTS
-} from './eventConstants';
+import {  FETCH_EVENTS } from './eventConstants';
 import { asyncActionStart, asyncActionFinish, asyncActionError } from '../async/asyncActions';
 import { createNewEvent } from '../../app/common/utils/helpers';
 import moment from 'moment';
