@@ -46,8 +46,7 @@ const panes = [
 class UserDetailedPage extends Component {
 
     async componentDidMount() {
-        let events = await this.props.getUserEvents(this.props.userUid, 2);
-        console.log(events);
+        await this.props.getUserEvents(this.props.userUid, 2);
     }
 
     changeTab = (e, data) => {
@@ -55,7 +54,7 @@ class UserDetailedPage extends Component {
     }
 
     render() {
-        const { profile, photos, auth, match, requesting, events, eventsLoading, changeTab } = this.props;
+        const { profile, photos, auth, match, requesting, events, eventsLoading } = this.props;
         const isCurrentUser = auth.uid === match.params.id;
         const loading = Object.values(requesting).some(a => a === true);
 
