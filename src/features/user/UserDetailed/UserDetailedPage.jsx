@@ -9,7 +9,7 @@ import format from 'date-fns/format';
 import { userDetailedQuery } from '../userQueries';
 import LazyLoad from 'react-lazyload';
 import LoadingComponent from '../../../app/layout/LoadingComponent';
-import { getUserEvents } from '../userActions';
+import { getUserEvents, followUser } from '../userActions';
 
 const mapStateToProps = (state, ownProps) => {
     let userUid = null;
@@ -33,7 +33,8 @@ const mapStateToProps = (state, ownProps) => {
 }
   
 const actions = {
-    getUserEvents
+    getUserEvents,
+    followUser
 }
 
 const panes = [
@@ -54,7 +55,7 @@ class UserDetailedPage extends Component {
     }
 
     render() {
-        const { profile, photos, auth, match, requesting, events, eventsLoading } = this.props;
+        const { profile, photos, auth, match, requesting, events, eventsLoading, followUser } = this.props;
         const isCurrentUser = auth.uid === match.params.id;
         const loading = Object.values(requesting).some(a => a === true);
 
@@ -125,7 +126,7 @@ class UserDetailedPage extends Component {
                         {isCurrentUser ? (
                             <Button as={Link} to='/settings' color='teal' fluid basic content='Edit Profile'/>
                         ) : (
-                            <Button color='teal' fluid basic content='Follow User'/>
+                            <Button onClick={() => followUser(profile)} color='teal' fluid basic content='Follow User'/>
                         )}
                     </Segment>
                 </Grid.Column>
