@@ -18,7 +18,7 @@ const eventImageTextStyle = {
 
 class EventDetailedHeader extends Component {
     render() {
-        const {event, isHost, isGoing, goingToEvent, cancelGoingToEvent} = this.props;
+        const {loading, event, isHost, isGoing, goingToEvent, cancelGoingToEvent} = this.props;
         let eventDate;
         if(event.date) {
             eventDate = event.date.toDate();
@@ -53,7 +53,7 @@ class EventDetailedHeader extends Component {
                         {isGoing ? (
                             <Button onClick={() => cancelGoingToEvent(event)}>Cancel My Place</Button> 
                         ) : (
-                            <Button onClick={() => goingToEvent(event)} color="teal">JOIN THIS EVENT</Button> 
+                            <Button loading={loading} onClick={() => goingToEvent(event)} color="teal">JOIN THIS EVENT</Button> 
                         )}
                     </div> )}
                 {isHost && (
