@@ -18,7 +18,7 @@ const eventImageTextStyle = {
 
 class EventDetailedHeader extends Component {
     render() {
-        const {loading, event, isHost, isGoing, goingToEvent, cancelGoingToEvent} = this.props;
+        const {loading, event, authenticated, isHost, isGoing, goingToEvent, cancelGoingToEvent,openModal} = this.props;
         let eventDate;
         if(event.date) {
             eventDate = event.date.toDate();
@@ -48,20 +48,30 @@ class EventDetailedHeader extends Component {
                 </Segment>
             
                 <Segment attached="bottom">
-                {!isHost &&  (
+                    {!isHost && (
                     <div>
-                        {isGoing ? (
-                            <Button onClick={() => cancelGoingToEvent(event)}>Cancel My Place</Button> 
-                        ) : (
-                            <Button loading={loading} onClick={() => goingToEvent(event)} color="teal">JOIN THIS EVENT</Button> 
-                        )}
-                    </div> )}
-                {isHost && (
-                    <Button as={Link} to={`/manage/${event.id}`} color="orange" floated="right">
+                        {isGoing &&
+                        <Button onClick={() => cancelGoingToEvent(event)}>Cancel My Place</Button>}
+
+                        {!isGoing && authenticated &&
+                        <Button loading={loading} onClick={() => goingToEvent(event)} color="teal">JOIN THIS EVENT</Button>}
+                        
+                        {!authenticated &&
+                        <Button loading={loading} onClick={() => openModal('UnauthModal')} color="teal">JOIN THIS EVENT</Button>}
+
+                    </div>
+                    )}
+
+                    {isHost && (
+                    <Button
+                        as={Link}
+                        to={`/manage/${event.id}`}
+                        color="orange"
+                    >
                         Manage Event
                     </Button>
-                )}
-                   
+                    )}
+                    
                 </Segment>
             </Segment.Group>
         )

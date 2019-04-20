@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Button } from 'semantic-ui-react'; 
-import { incrementAsync, decrementAsync } from './testActions';
+import { incrementAsync, decrementAsync, testPermissions } from './testActions';
 import { openModal } from '../modals/modalActions';
 
 const mapStateToProps = (state) => ({
@@ -12,12 +12,13 @@ const mapStateToProps = (state) => ({
 const actions = {
     incrementAsync,
     decrementAsync,
-    openModal
+    openModal,
+    testPermissions
 }
 
 class TestComponent extends Component {
     render() {
-        const {incrementAsync, decrementAsync, data, openModal, loading} = this.props;
+        const {testPermissions, incrementAsync, decrementAsync, data, openModal, loading} = this.props;
 
         return (
         <div>
@@ -26,6 +27,7 @@ class TestComponent extends Component {
             <Button loading={loading} onClick={incrementAsync} color="green" content="Increment" />
             <Button loading={loading} onClick={decrementAsync} color="red" content="Decrement" />
             <Button onClick={() => openModal('TestModal', {data: 43})} color="teal" content="Open Modal" />
+            <Button onClick={testPermissions} color="teal" content="Test Permissions" />
         </div>
         )
     }
