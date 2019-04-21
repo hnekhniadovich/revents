@@ -5,7 +5,6 @@ import { Segment, List, Item, Label } from 'semantic-ui-react';
 class EventDetailedSidebar extends Component {
     render() {
         const { attendees } = this.props;
-        const isHost = false;
           return (
             <div>
                 <Segment
@@ -22,7 +21,7 @@ class EventDetailedSidebar extends Component {
                   <List relaxed divided>
                   {attendees && attendees.map((attendee) => (
                       <Item key={attendee.id} style={{ position: 'relative' }}>
-                      {isHost &&
+                      {attendee.host &&
                       <Label
                         style={{ position: 'absolute' }}
                         color="orange"
