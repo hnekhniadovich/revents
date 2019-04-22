@@ -13,7 +13,7 @@ class BasicPage extends Component {
         return (
             <Segment>
                 <Header dividing size='large' content='Basics' />
-                <Form onSubmit={handleSubmit(updateProfile)}>
+                <Form onSubmit={handleSubmit(updateProfile)} autoComplete='off'>
                     <Field
                         width={8}
                         name='displayName'

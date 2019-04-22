@@ -20,7 +20,7 @@ const AboutPage = ({ pristine, submitting, handleSubmit, updateProfile }) => {
     <Segment>
       <Header dividing size="large" content="About Me" />
       <p>Complete your profile to get the most out of this site</p>
-      <Form onSubmit={handleSubmit(updateProfile)}>
+      <Form onSubmit={handleSubmit(updateProfile)} autoComplete='off'>
         <Form.Group inline>
             <label>Tell us your status: </label>
             <Field name="status" component={RadioInput} type="radio" value="single" label="Single" />

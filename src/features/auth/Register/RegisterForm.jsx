@@ -20,7 +20,7 @@ const validate = combineValidators({
 const RegisterForm = ({handleSubmit, registerUser, error, invalid, submitting}) => {
   return (
     <div>
-      <Form size="large" onSubmit={handleSubmit(registerUser)}>
+      <Form size="large" onSubmit={handleSubmit(registerUser)} autoComplete='off'>
         <Segment>
           <Field
             name="displayName"
