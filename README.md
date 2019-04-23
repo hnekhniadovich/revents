@@ -20,12 +20,12 @@ firebaseConfig: {
   messagingSenderId: "...."
 }
 ```
-### Here are come features implemented in this project
+### Features implemented in this project
 
 * Login and Register functionality using Firebase authentication
 * Adding social login for Facebook and Google into the application
 * Photo uploading using drag and drop, with resizing and cropping of the images before upload
 * Paging, Sorting and Filtering with Firestore
 * Infinite scroll from react-infinite-scroller
-* Creating reusable form components with Redux forms
+* Creating reusable form components with Redux Forms
 * Building a great looking application with Semantic UI
