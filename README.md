@@ -26,5 +26,6 @@ firebaseConfig: {
 * Adding social login for Facebook and Google into the application
 * Photo uploading using drag and drop, with resizing and cropping of the images before upload
 * Paging, Sorting and Filtering with Firestore
+* Infinite scroll from react-infinite-scroller
 * Creating reusable form components with Redux forms
 * Building a great looking application with Semantic UI
